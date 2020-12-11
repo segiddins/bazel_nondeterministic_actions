@@ -1,0 +1,22 @@
+[package]
+name = "compile_with_bazel"
+version = "0.0.0"
+
+# Mandatory (or Cargo tooling is unhappy)
+[lib]
+path = "fake_lib.rs"
+
+[dependencies]
+log = "=0.3.6"
+regex = "1"
+lazy_static = "1.4.0"
+
+[raze]
+# The WORKSPACE relative path to the Cargo.toml working directory.
+workspace_path = "//cargo"
+
+# The target to generate BUILD rules for.
+target = "x86_64-apple-darwin"
+
+genmode = "Remote"
+

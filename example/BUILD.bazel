@@ -1,0 +1,39 @@
+genrule(
+    name = "example_file",
+    srcs = ["example.txt"],
+    outs = ["example_file0.txt"],
+    cmd = """
+    cat $(SRCS) <(date) <(cat /dev/urandom | base64 | head -c $$RANDOM) > $(OUTS)
+    """,
+)
+
+[
+    genrule(
+        name = "example_file{}".format(i),
+        srcs = ["example_file{}.txt".format(i - 1)],
+        outs = ["example_file{}.txt".format(i)],
+        cmd = """
+        cp $(SRCS) $(OUTS)
+        """,
+    )
+    for i in range(1, 15 + 1)
+]
+
+genrule(
+    name = "uses_example_file",
+    srcs = [
+        "example_file0.txt",
+        "example_file15.txt",
+        "constant.txt",
+    ],
+    outs = ["uses_example_file.txt"],
+    cmd = """
+    echo constant > $(OUTS)
+    """,
+)
+
+genrule(
+    name = "constant",
+    outs = ["constant.txt"],
+    cmd = "echo 4 > $(OUTS)",
+)
